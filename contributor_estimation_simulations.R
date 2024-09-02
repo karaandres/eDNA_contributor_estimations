@@ -202,10 +202,10 @@ msat_genotypes <- msat_genotypes[ , -which(names(msat_genotypes) %in% patterns)]
 
 # Subset to different numbers of individuals in full and small msat panels
 set.seed(984)
-msats_25_inds_10_loci <- CalculateMsatFreqs(msat_genotypes[sample(nrow(msat_genotypes), 25),1:10]) # 25 individuals; 10 loci, 91 alleles
-msats_25_inds_all_loci <- CalculateMsatFreqs(msat_genotypes[sample(nrow(msat_genotypes), 25),]) # 25 individuals; 44 loci, 402 alleles
-msats_100_inds_10_loci <- CalculateMsatFreqs(msat_genotypes[sample(nrow(msat_genotypes), 100),1:10]) # 100 individuals; 10 loci, 121 alleles
-msats_100_inds_all_loci <- CalculateMsatFreqs(msat_genotypes[sample(nrow(msat_genotypes), 100),]) # 100 individuals; 44 loci, 460 alleles
+msats_25_inds_10_loci <- CalculateMsatFreqs(msat_genotypes[sample(nrow(msat_genotypes), 25),1:10]) # 25 individuals; 10 loci, 93 alleles
+msats_25_inds_all_loci <- CalculateMsatFreqs(msat_genotypes[sample(nrow(msat_genotypes), 25),]) # 25 individuals; 44 loci, 382 alleles
+msats_100_inds_10_loci <- CalculateMsatFreqs(msat_genotypes[sample(nrow(msat_genotypes), 100),1:10]) # 100 individuals; 10 loci, 130 alleles
+msats_100_inds_all_loci <- CalculateMsatFreqs(msat_genotypes[sample(nrow(msat_genotypes), 100),]) # 100 individuals; 44 loci, 559 alleles
 
 msat_freqs <- list(msats_25_inds_10_loci, msats_100_inds_10_loci,
                    msats_25_inds_all_loci, msats_100_inds_all_loci)
@@ -309,7 +309,7 @@ mito_genotypes <- mito_genotypes[,grep("mt", colnames(mito_genotypes))] # subset
 # Subset to different numbers of individuals
 set.seed(593)
 mito_25_inds_4k <- CalculateMitoFreqs(mito_genotypes[sample(nrow(mito_genotypes), 25),2]) # 25 individuals; 20 alleles
-mito_100_inds_4k <- CalculateMitoFreqs(mito_genotypes[sample(nrow(mito_genotypes), 100), 2]) # 100 individuals; 40 allele
+mito_100_inds_4k <- CalculateMitoFreqs(mito_genotypes[sample(nrow(mito_genotypes), 100), 2]) # 100 individuals; 39 alleles
 mito_freqs <- list(mito_25_inds_4k, mito_100_inds_4k)
 names(mito_freqs) <- c("mito_25_inds_4k", "mito_100_inds_4k")
 
@@ -322,8 +322,8 @@ mito_genotypes <- mito_genotypes$Elor_16k_78
 
 # Try with just a single segment: Elor_16k_78
 set.seed(691)
-mito_25_inds_Elor_16k_78 <- CalculateMitoFreqs(sample(mito_genotypes, 25)) # 25 individuals; 8 alleles
-mito_100_inds_Elor_16k_78 <- CalculateMitoFreqs(sample(mito_genotypes, 100)) # 100 individuals; 23 allele
+mito_25_inds_Elor_16k_78 <- CalculateMitoFreqs(sample(mito_genotypes, 25)) # 25 individuals; 9 alleles
+mito_100_inds_Elor_16k_78 <- CalculateMitoFreqs(sample(mito_genotypes, 100)) # 100 individuals; 24 allele
 mito_freqs <- list(mito_25_inds_Elor_16k_78, mito_100_inds_Elor_16k_78)
 names(mito_freqs) <- c("mito_25_inds_Elor_16k_78", "mito_100_inds_Elor_16k_78")
 
@@ -332,8 +332,8 @@ t=1 # index for each of 2 datasets
 for (k in mito_freqs){ # for each dataset
   simulated_mixtures <- data.frame() 
   for (i in rep(seq(from=2, to=100, by=2), each=100)){ 
-    #sample_genotypes <- mito_genotypes[sample(nrow(mito_genotypes), i),2] # sample i individuals from total population
-    sample_genotypes <- sample(mito_genotypes, i) # sample i individuals from total population
+    sample_genotypes <- mito_genotypes[sample(nrow(mito_genotypes), i),2] # sample i individuals from total population
+    #sample_genotypes <- sample(mito_genotypes, i) # sample i individuals from total population
     sample_freqs <- CalculateMitoFreqs(sample_genotypes) # calculate sample allele freqs
     combined_allele_freqs <- merge(k, sample_freqs, by=c("locus","allele")) # merge sampled alleles with population allele freqs
     p.v <- combined_allele_freqs$freq.x # get population frequencies for alleles detected in mixture 
@@ -392,15 +392,15 @@ plot_cont_est <- function(x, y, nloci, N_ind_x, N_ind_y, marker, ylabel) {
     ylim(-100,100) + xlim(0,100) +
     geom_abline(slope=0, intercept=0) +
     theme_bw() +
-    theme(axis.text=element_text(size=14),
+    theme(axis.text=element_text(size=16),
           axis.title=element_text(size=20)) +
-    theme(legend.position=c(0.23, 0.88),
-          legend.text=element_text(size=14),
-          legend.title=element_text(size=14)) +
+    theme(legend.position=c(0.25, 0.88),
+            legend.text=element_text(size=16),
+            legend.title=element_text(size=16)) +
     labs(color = "Allele frequencies") +
     guides(colour=guide_legend(override.aes = list(alpha=1, size=3))) +
     theme(legend.background = element_rect(colour = "black", size=0.3)) +
-    if (ylabel==FALSE) theme(axis.title.y=element_blank()) 
+    if (ylabel==FALSE) theme(axis.title.y=element_blank())
   density_x <- read.csv(paste0("datasets/freqs_",x,".csv", sep=""), col.names=c("locus","allele","freq"))
   density_x$inds <- as.factor(rep(N_ind_x))
   density_y <- read.csv(paste0("datasets/freqs_",y,".csv", sep=""), col.names=c("locus","allele","freq"))
@@ -411,15 +411,16 @@ plot_cont_est <- function(x, y, nloci, N_ind_x, N_ind_y, marker, ylabel) {
   p3 <- ggplot(density_comb, aes(x=freq, y = ..count../sum(..count..)*100, color=inds))+ 
     geom_density(stat='bin', cex=1, bins=20, aes(fill=factor(inds)), alpha=0.3) +
     geom_vline(data=mu, aes(xintercept=grp.mean, color=inds), linetype="dashed", cex=0.8) +
+    scale_x_continuous(n.breaks=4) +
     scale_color_manual(values=c("#9aab89","#58508d")) +
     scale_fill_manual(values=c("#9aab89","#58508d")) +
     theme_bw() +
-    theme(axis.text=element_text(size=12),
-          axis.title=element_text(size=14)) +
+    theme(axis.text=element_text(size=14),
+          axis.title=element_text(size=16)) +
     xlab("Allele frequency") + ylab("%") +
     theme(legend.position="none")
-  p <- p1 + annotation_custom(ggplotGrob(p3), xmin = -5, xmax = 50, 
-                              ymin = -110, ymax = -50)
+  p <- p1 + annotation_custom(ggplotGrob(p3), xmin = -5, xmax = 60, 
+                              ymin = -110, ymax = -45)
   if (marker=="msat") {
     p2 <- ggplot(simulated_mixtures) +
       geom_line(aes(x=true_N, y=n_failed, color=N_ind),
@@ -427,11 +428,11 @@ plot_cont_est <- function(x, y, nloci, N_ind_x, N_ind_y, marker, ylabel) {
       scale_color_manual(values=c("#9aab89","#58508d")) +
       ylab("Failed loci") + xlab("") + ylim(0, nloci) + xlim(0,100) +
       theme_bw() +
-      theme(axis.text=element_text(size=12),
-            axis.title=element_text(size=14)) +
+      theme(axis.text=element_text(size=14),
+            axis.title=element_text(size=16)) +
       theme(legend.position = "none")
-    p <- p + annotation_custom(ggplotGrob(p2), xmin = 50, xmax = 100, 
-                               ymin = 45, ymax = 105)
+    p <- p + annotation_custom(ggplotGrob(p2), xmin = 40, xmax = 100, 
+                               ymin = 40, ymax = 105)
   }
   return(p)
 }
@@ -450,7 +451,7 @@ arrange_plots <- ggarrange(msat_all_loci, snp_256_loci, mito_4k,
                                       "Mitochondrial haplotypes", "","",""), 
                            ncol=3, nrow=2, hjust=-0.7, vjust=0,
                            font.label = list(size = 20))
-# ggsave(filename=paste("Figure_2_simulated_mixtures_1.20.23.pdf"), plot=arrange_plots, dpi=300, width=16, height=12, units="in")
+# ggsave(filename=paste("Figure_2_simulated_mixtures_1.24.23.pdf"), plot=arrange_plots, dpi=300, width=16, height=12, units="in")
 
 ### Mean (sd) bias for table in manuscript
 mean_bias <- function(x, marker, values) {
@@ -468,15 +469,15 @@ mean_bias <- function(x, marker, values) {
   return(dataset_summary[dataset_summary$true_N %in% values,])
 }
 
-mean_bias("msats_100_inds_10_loci", "msat", c(10,40,100))
 mean_bias("msats_100_inds_all_loci", "msat", c(10,40,100))
-mean_bias("msats_25_inds_10_loci", "msat", c(10,40,100))
 mean_bias("msats_25_inds_all_loci", "msat", c(10,40,100))
-mean_bias("SNPs_100_inds_64_loci", "SNP", c(10,40,100))
+mean_bias("msats_100_inds_10_loci", "msat", c(10,40,100))
+mean_bias("msats_25_inds_10_loci", "msat", c(10,40,100))
 mean_bias("SNPs_100_inds_256_loci", "SNP", c(10,40,100))
-mean_bias("SNPs_25_inds_64_loci", "SNP", c(10,40,100))
 mean_bias("SNPs_25_inds_256_loci", "SNP", c(10,40,100))
-mean_bias("mito_100_inds_Elor_16k_78", "mito", c(10,40,100))
+mean_bias("SNPs_100_inds_64_loci", "SNP", c(10,40,100))
+mean_bias("SNPs_25_inds_64_loci", "SNP", c(10,40,100))
 mean_bias("mito_100_inds_4k", "mito", c(10,40,100))
-mean_bias("mito_25_inds_Elor_16k_78", "mito", c(10,40,100))
 mean_bias("mito_25_inds_4k", "mito", c(10,40,100))
+mean_bias("mito_100_inds_Elor_16k_78", "mito", c(10,40,100))
+mean_bias("mito_25_inds_Elor_16k_78", "mito", c(10,40,100))
